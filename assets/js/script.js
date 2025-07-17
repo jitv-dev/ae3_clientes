@@ -15,36 +15,67 @@ function renderizarClientes() {
 
     clientes.forEach((cliente, index) => {
         const datosCliente = document.createElement("tr");
-        datosCliente.className = "col mb-4 text-center";
+        datosCliente.className = "text-center";
         datosCliente.innerHTML = `<th scope="row">${cliente.id}</th>
                 <td>${cliente.nombre}</td>
                 <td>${cliente.apellido}</td>
                 <td>${cliente.email}</td>
                 <td>${cliente.telefono}</td>
-                <td>${cliente.activo}</td>
+                <td>${cliente.activo ? "Activo" : "Inactivo"}</td>
                 `
 
         clientesLista.appendChild(datosCliente)
     })
 }
 
-let contadorEstado = 0
-for (let i = 0; i < clientes.length; i++){
-    let contadorClientes = document.getElementById("numeroClientesActivos")
-    if (clientes[i].activo) {
-        contadorEstado++
-        contadorClientes.textContent = contadorEstado
+actualizarContadorActivos()
+
+function actualizarContadorActivos() {
+    let contadorEstado = 0;
+    for (let i = 0; i < clientes.length; i++) {
+        if (clientes[i].activo) {
+            contadorEstado++;
+        }
     }
+
+    let contadorClientes = document.getElementById("numeroClientesActivos");
+    contadorClientes.textContent = contadorEstado;
 }
 
 
 
-function agregarCliente(){
+document.getElementById("agregarCliente").addEventListener("click", () => {
+    const nombre = document.getElementById("nombre").value.trim();
+    const apellido = document.getElementById("apellido").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const telefono = document.getElementById("telefono").value.trim();
+    const activo = document.getElementById("activo").value === "true";
 
-}
+    if (!nombre || !apellido || !email || !telefono) {
+        alert("Completa todos los campos.");
+        return;
+    }
 
+    const nuevoCliente = {
+        id: clientes.length + 1,
+        nombre,
+        apellido,
+        email,
+        telefono,
+        activo
+    };
 
-
-document.addEventListener("DOMContentLoaded", () => {
+    clientes.push(nuevoCliente);
     renderizarClientes();
+    actualizarContadorActivos();
+
+    document.getElementById("nombre").value = "";
+    document.getElementById("apellido").value = "";
+    document.getElementById("email").value = "";
+    document.getElementById("telefono").value = "";
+    document.getElementById("activo").value = "true";
 });
+
+
+
+document.addEventListener("DOMContentLoaded", renderizarClientes);
