@@ -3,7 +3,7 @@
 // ]
 
 const clientes = [
-    { id: 1, nombre:"Pepito", apellido: "Perez", email: "pepitoperez@gmail.com", telefono:"+56912345678", activo: true },
+    { id: 1, nombre: "Pepito", apellido: "Perez", email: "pepitoperez@gmail.com", telefono: "+56912345678", activo: true },
     { id: 2, nombre: "Jeremy", apellido: "Figueroa", email: "jereymifigueroa@gmail.com", telefono: "+56987654321", activo: false },
     { id: 3, nombre: "Juana", apellido: "DeArco", email: "juanadearco@gmail.com", telefono: "+569248651379", activo: true }
 ];
@@ -22,13 +22,18 @@ function renderizarClientes() {
                 <td>${cliente.email}</td>
                 <td>${cliente.telefono}</td>
                 <td>${cliente.activo ? "Activo" : "Inactivo"}</td>
+                <td>
+                <button class="btn btn-danger btn-sm" onclick="eliminarCliente(${index})">
+                <i class="bi bi-trash"></i> Eliminar
+                </button>
+                </td>
                 `
 
         clientesLista.appendChild(datosCliente)
     })
 }
 
-actualizarContadorActivos()
+
 
 function actualizarContadorActivos() {
     let contadorEstado = 0;
@@ -42,7 +47,11 @@ function actualizarContadorActivos() {
     contadorClientes.textContent = contadorEstado;
 }
 
-
+function eliminarCliente(index){
+    clientes.splice(index,1)
+    renderizarClientes()
+    actualizarContadorActivos()
+}
 
 document.getElementById("agregarCliente").addEventListener("click", () => {
     const nombre = document.getElementById("nombre").value.trim();
@@ -77,5 +86,5 @@ document.getElementById("agregarCliente").addEventListener("click", () => {
 });
 
 
-
+actualizarContadorActivos()
 document.addEventListener("DOMContentLoaded", renderizarClientes);
