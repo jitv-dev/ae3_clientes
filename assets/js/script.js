@@ -84,9 +84,11 @@ function actualizarContadorInactivos() {
 }
 
 function eliminarCliente(index) {
-    clientes.splice(index, 1)
-    renderizarClientes()
-    actualizarContadorActivos()
+    clientes.splice(index, 1);
+    renderizarClientes();
+    renderizarClientesInactivos();
+    actualizarContadorActivos();
+    actualizarContadorInactivos();
 }
 
 document.getElementById("agregarCliente").addEventListener("click", () => {
@@ -94,8 +96,15 @@ document.getElementById("agregarCliente").addEventListener("click", () => {
     const apellido = document.getElementById("apellido").value.trim();
     const emailInput = document.getElementById("email");
     const email = emailInput.value.trim();
-    const telefono = document.getElementById("telefono").value.trim();
+    const telefonoInput = document.getElementById("telefono");
+    const telefono = telefonoInput.value.trim();
     const activo = document.getElementById("activo").value === "true";
+
+
+    if (!telefonoInput.checkValidity()) {
+        alert("Ingresa un número telefónico válido.");
+        return;
+    }
 
     if (!nombre || !apellido || !email || !telefono) {
         alert("Completa todos los campos.");
@@ -109,7 +118,7 @@ document.getElementById("agregarCliente").addEventListener("click", () => {
 
     if (clienteEditandoIndex !== null) {
         clientes[clienteEditandoIndex] = {
-            ...clientes[clienteEditandoIndex], 
+            ...clientes[clienteEditandoIndex],
             nombre,
             apellido,
             email,
@@ -118,16 +127,15 @@ document.getElementById("agregarCliente").addEventListener("click", () => {
         };
 
         clienteEditandoIndex = null;
-
         const boton = document.getElementById("agregarCliente");
         boton.textContent = "Agregar";
         boton.classList.remove("btn-success");
         boton.classList.add("btn-primary");
 
     } else {
-
+        const maxId = clientes.length > 0 ? Math.max(...clientes.map(c => c.id)) : 0;
         const nuevoCliente = {
-            id: clientes.length + 1,
+            id: maxId + 1,
             nombre,
             apellido,
             email,
@@ -139,6 +147,8 @@ document.getElementById("agregarCliente").addEventListener("click", () => {
 
     renderizarClientes();
     actualizarContadorActivos();
+    renderizarClientesInactivos();
+    actualizarContadorInactivos();
 
     document.getElementById("nombre").value = "";
     document.getElementById("apellido").value = "";
@@ -162,7 +172,8 @@ function editarCliente(index) {
     boton.classList.add("btn-success");
 }
 
-actualizarContadorActivos()
-document.addEventListener("DOMContentLoaded", renderizarClientes);
-renderizarClientesInactivos()
+
+renderizarClientes();
+renderizarClientesInactivos();
+actualizarContadorActivos();
 actualizarContadorInactivos();
