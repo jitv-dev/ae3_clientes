@@ -33,10 +33,25 @@
     <div>
         <H5 class="text-center">Clientes activos: <span id="numeroClientesActivos"></span></H5>
     </div>
-
-    <hr>
-
-    <div class="container">
+    <div class="container pt-4">
+        <table class="table table-danger">
+            <thead>
+                <tr class="text-center">
+                    <th scope="col">ID</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Apellido</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Teléfono</th>
+                </tr>
+            </thead>
+            <tbody id="lista-clientes-inactivos">
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <h5 class="text-center">Clientes inactivos: <span id="numeroClientesInactivos"></span></h5>
+    </div>
+    <div class="container pt-4">
         <h4 class="text-center">Agregar nuevo cliente</h4>
         <div class="row g-2 mb-3">
             <div class="col-md-6">
@@ -59,21 +74,21 @@
             </div>
             <div class="col text-center">
                 <button class="btn btn-primary" id="agregarCliente">Agregar</button>
-                
+
             </div>
         </div>
     </div>
 
     <hr>
 
-    
 
 
 
 
 
 
-    
+
+
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
         integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
         crossorigin="anonymous"></script>

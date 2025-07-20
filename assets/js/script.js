@@ -39,7 +39,25 @@ function renderizarClientes() {
     })
 }
 
+function renderizarClientesInactivos() {
+    const listaInactivos = document.getElementById("lista-clientes-inactivos");
+    listaInactivos.innerHTML = "";
 
+    const clientesInactivos = clientes.filter(cliente => !cliente.activo);
+
+    clientesInactivos.forEach(cliente => {
+        const fila = document.createElement("tr");
+        fila.className = "text-center";
+        fila.innerHTML = `
+            <th scope="row">${cliente.id}</th>
+            <td>${cliente.nombre}</td>
+            <td>${cliente.apellido}</td>
+            <td>${cliente.email}</td>
+            <td>${cliente.telefono}</td>
+        `;
+        listaInactivos.appendChild(fila);
+    });
+}
 
 function actualizarContadorActivos() {
     let contadorEstado = 0;
@@ -50,6 +68,18 @@ function actualizarContadorActivos() {
     }
 
     let contadorClientes = document.getElementById("numeroClientesActivos");
+    contadorClientes.textContent = contadorEstado;
+}
+
+function actualizarContadorInactivos() {
+    let contadorEstado = 0;
+    for (let i = 0; i < clientes.length; i++) {
+        if (!clientes[i].activo) {
+            contadorEstado++;
+        }
+    }
+
+    let contadorClientes = document.getElementById("numeroClientesInactivos");
     contadorClientes.textContent = contadorEstado;
 }
 
@@ -79,7 +109,7 @@ document.getElementById("agregarCliente").addEventListener("click", () => {
 
     if (clienteEditandoIndex !== null) {
         clientes[clienteEditandoIndex] = {
-            ...clientes[clienteEditandoIndex], // mantiene el id original
+            ...clientes[clienteEditandoIndex], 
             nombre,
             apellido,
             email,
@@ -95,7 +125,7 @@ document.getElementById("agregarCliente").addEventListener("click", () => {
         boton.classList.add("btn-primary");
 
     } else {
-        // Agregar nuevo cliente
+
         const nuevoCliente = {
             id: clientes.length + 1,
             nombre,
@@ -117,10 +147,6 @@ document.getElementById("agregarCliente").addEventListener("click", () => {
     document.getElementById("activo").value = "true";
 });
 
-
-actualizarContadorActivos()
-document.addEventListener("DOMContentLoaded", renderizarClientes);
-
 function editarCliente(index) {
     const cliente = clientes[index];
     document.getElementById("nombre").value = cliente.nombre;
@@ -135,3 +161,8 @@ function editarCliente(index) {
     boton.classList.remove("btn-primary");
     boton.classList.add("btn-success");
 }
+
+actualizarContadorActivos()
+document.addEventListener("DOMContentLoaded", renderizarClientes);
+renderizarClientesInactivos()
+actualizarContadorInactivos();
