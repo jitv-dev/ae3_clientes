@@ -8,6 +8,7 @@ const clientes = [
     { id: 3, nombre: "Juana", apellido: "DeArco", email: "juanadearco@gmail.com", telefono: "+569248651379", activo: true }
 ];
 
+let clienteEditandoIndex = null;
 
 function renderizarClientes() {
     const clientesLista = document.getElementById("lista-clientes");
@@ -25,6 +26,11 @@ function renderizarClientes() {
                 <td>
                 <button class="btn btn-danger btn-sm" onclick="eliminarCliente(${index})">
                 <i class="bi bi-trash"></i> Eliminar
+                </button>
+                </td>
+                <td>
+                <button class="btn btn-secondary btn-sm" onclick="editarCliente(${index})">
+                <i class="bi bi-pencil-square"></i> Editar
                 </button>
                 </td>
                 `
@@ -47,8 +53,8 @@ function actualizarContadorActivos() {
     contadorClientes.textContent = contadorEstado;
 }
 
-function eliminarCliente(index){
-    clientes.splice(index,1)
+function eliminarCliente(index) {
+    clientes.splice(index, 1)
     renderizarClientes()
     actualizarContadorActivos()
 }
@@ -56,7 +62,8 @@ function eliminarCliente(index){
 document.getElementById("agregarCliente").addEventListener("click", () => {
     const nombre = document.getElementById("nombre").value.trim();
     const apellido = document.getElementById("apellido").value.trim();
-    const email = document.getElementById("email").value.trim();
+    const emailInput = document.getElementById("email");
+    const email = emailInput.value.trim();
     const telefono = document.getElementById("telefono").value.trim();
     const activo = document.getElementById("activo").value === "true";
 
@@ -65,16 +72,41 @@ document.getElementById("agregarCliente").addEventListener("click", () => {
         return;
     }
 
-    const nuevoCliente = {
-        id: clientes.length + 1,
-        nombre,
-        apellido,
-        email,
-        telefono,
-        activo
-    };
+    if (!emailInput.checkValidity()) {
+        alert("Ingresa un correo electrónico válido.");
+        return;
+    }
 
-    clientes.push(nuevoCliente);
+    if (clienteEditandoIndex !== null) {
+        clientes[clienteEditandoIndex] = {
+            ...clientes[clienteEditandoIndex], // mantiene el id original
+            nombre,
+            apellido,
+            email,
+            telefono,
+            activo
+        };
+
+        clienteEditandoIndex = null;
+
+        const boton = document.getElementById("agregarCliente");
+        boton.textContent = "Agregar";
+        boton.classList.remove("btn-success");
+        boton.classList.add("btn-primary");
+
+    } else {
+        // Agregar nuevo cliente
+        const nuevoCliente = {
+            id: clientes.length + 1,
+            nombre,
+            apellido,
+            email,
+            telefono,
+            activo
+        };
+        clientes.push(nuevoCliente);
+    }
+
     renderizarClientes();
     actualizarContadorActivos();
 
@@ -88,3 +120,18 @@ document.getElementById("agregarCliente").addEventListener("click", () => {
 
 actualizarContadorActivos()
 document.addEventListener("DOMContentLoaded", renderizarClientes);
+
+function editarCliente(index) {
+    const cliente = clientes[index];
+    document.getElementById("nombre").value = cliente.nombre;
+    document.getElementById("apellido").value = cliente.apellido;
+    document.getElementById("email").value = cliente.email;
+    document.getElementById("telefono").value = cliente.telefono;
+    document.getElementById("activo").value = cliente.activo.toString();
+    clienteEditandoIndex = index;
+
+    const boton = document.getElementById("agregarCliente");
+    boton.textContent = "Guardar cambios";
+    boton.classList.remove("btn-primary");
+    boton.classList.add("btn-success");
+}
