@@ -8,6 +8,13 @@ const clientes = [
     { id: 3, nombre: "Juana", apellido: "DeArco", email: "juanadearco@gmail.com", telefono: "+56924865137", activo: true }
 ];
 
+//Segundo arreglo con un id duplicado 
+const nuevosClientesExternos = [
+    { id: 3, nombre: "Juana", apellido: "DeArco", email: "juanadearco@gmail.com", telefono: "+56924865137", activo: true },
+    { id: 4, nombre: "Estefano", apellido: "Mesa", email: "ebt.asasd@gmail.com", telefono: "+56977777777", activo: true },
+    { id: 5, nombre: "Laura", apellido: "Mena", email: "laura.mena5923@gmail.com", telefono: "+56988888888", activo: false }
+];
+
 let clienteEditandoIndex = null;
 
 function renderizarClientes() {
@@ -172,8 +179,100 @@ function editarCliente(index) {
     boton.classList.add("btn-success");
 }
 
+function unirClientes(arr1, arr2) {
+    return arr1.concat(arr2);
+}
 
+function filtrarClientesUnicos(clientesUnidos) {
+    const idsUnicos = new Set();
+    const clientesFiltrados = [];
+
+    for (const cliente of clientesUnidos) {
+        if (!idsUnicos.has(cliente.id)) {
+            idsUnicos.add(cliente.id);
+            clientesFiltrados.push(cliente);
+        }
+    }
+
+    return clientesFiltrados;
+}
+
+function integrarClientesExternos() {
+    const unidos = unirClientes(clientes, nuevosClientesExternos);
+    const sinDuplicados = filtrarClientesUnicos(unidos);
+
+    if (sinDuplicados.length > clientes.length) {
+        clientes.length = 0;
+        clientes.push(...sinDuplicados);
+
+        renderizarClientes();
+        actualizarContadorActivos();
+        renderizarClientesInactivos();
+        actualizarContadorInactivos();
+    } else {
+        alert("No hay clientes nuevos que agregar.");
+    }
+}
+
+function filtrarYBuscarClientes() {
+    const textoBusqueda = document.getElementById("inputBusqueda").value.toLowerCase().trim();
+    const filtroEstado = document.getElementById("filtroEstado").value;
+
+    // Filtrar clientes según búsqueda y estado
+    const clientesFiltrados = clientes.filter(cliente => {
+        
+        const nombreCompleto = (cliente.nombre + " " + cliente.apellido).toLowerCase();
+        const idStr = cliente.id.toString();
+
+        const cumpleBusqueda = nombreCompleto.includes(textoBusqueda) || idStr.includes(textoBusqueda);
+
+        
+        let cumpleEstado = true;
+        if (filtroEstado === "activo") {
+            cumpleEstado = cliente.activo === true;
+        } else if (filtroEstado === "inactivo") {
+            cumpleEstado = cliente.activo === false;
+        }
+
+        return cumpleBusqueda && cumpleEstado;
+    });
+    renderizarClientesFiltrados(clientesFiltrados);
+}
+
+function renderizarClientesFiltrados(lista) {
+    const clientesLista = document.getElementById("lista-clientes");
+    clientesLista.innerHTML = "";
+
+    lista.forEach(cliente => {
+        const datosCliente = document.createElement("tr");
+        datosCliente.className = "text-center";
+        datosCliente.innerHTML = `<th scope="row">${cliente.id}</th>
+            <td>${cliente.nombre}</td>
+            <td>${cliente.apellido}</td>
+            <td>${cliente.email}</td>
+            <td>${cliente.telefono}</td>
+            <td>${cliente.activo ? "Activo" : "Inactivo"}</td>
+            <td>
+            <button class="btn btn-danger btn-sm" onclick="eliminarClientePorId(${cliente.id})">
+            <i class="bi bi-trash"></i> Eliminar
+            </button>
+            </td>
+            <td>
+            <button class="btn btn-secondary btn-sm" onclick="editarClientePorId(${cliente.id})">
+            <i class="bi bi-pencil-square"></i> Editar
+            </button>
+            </td>
+            `;
+
+        clientesLista.appendChild(datosCliente);
+    });
+}
+
+
+document.getElementById("inputBusqueda").addEventListener("input", filtrarYBuscarClientes);
+document.getElementById("filtroEstado").addEventListener("change", filtrarYBuscarClientes);
 renderizarClientes();
 renderizarClientesInactivos();
 actualizarContadorActivos();
 actualizarContadorInactivos();
+filtrarYBuscarClientes();
